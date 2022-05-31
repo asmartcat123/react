@@ -9,46 +9,16 @@ import moment from "moment";
 
 const { TextArea } = Input;
 function User(){
-    let clientHeight  = document.documentElement.clientHeight;
-    let scrollHeight = document.body.scrollHeight;
-    let scrollTop = document.documentElement.scrollTop;
-    console.log(clientHeight);
-    console.log(scrollHeight);
-    console.log(scrollTop);
-    let distance = 50;  //距离视窗还用50的时候，开始触发；
 
-    if ((scrollTop + clientHeight) >= (scrollHeight - distance)) {
-        console.log("开始加载数据");
-    }
     const[time,setTime]=useState(new Date());
     const[comments,setComments]=useState([]);
     const[submitting,setSubmitting]=useState(false);
     const[value,setValue]=useState('');
-    const [likes, setLikes] = useState(0);
-    const [dislikes, setDislikes] = useState(0);
-    const [action, setAction] = useState(null);
     const[image,setImage]=useState('');
     const[name,setName]=useState('');
 
-    const like = () => {
-        setLikes(1);
-        setDislikes(0);
-        setAction('liked');
-        console.log(likes);
-
-    };
-
-    const dislike = () => {
-        setLikes(0);
-        setDislikes(1);
-        setAction('disliked');
-        console.log(likes);
-    };
-
-
 
     const handleSubmit=()=>{
-
         if(!value) {return;}
         setSubmitting(true);
         let yy = new Date().getFullYear();
@@ -64,17 +34,13 @@ function User(){
             setValue();
             (async function getComment(){
                 const {data:res}=await axios.get("http://localhost:1642/api/User/getcomment",{params:{uid:window.sessionStorage.getItem('uid')}});
-                //  console.log(res.data);
+
                 res.data.map(item=>{
-                setComments([...comments,{author:item.username,avatar:item.uimage, content: <p>{item.comment}</p>, datetime: item.time,actions:actions}])
+                setComments([...comments,{author:item.username,avatar:item.uimage, content: <p>{item.comment}</p>, datetime: item.time}])
                     console.log(comments);
-
                 });
-
-
             })();
         },1000)
-
     }
   const onkeydown=(e)=> {
       if (value == '') {
@@ -87,26 +53,10 @@ function User(){
   }
   const handleChange=(e)=>{
       setValue(e.target.value)
-
-
   };
 
-    const actions = [
-        <Tooltip key="comment-basic-like" title="Like">
-      <span >
-          <span className="comment-action">{likes}</span>
-      </span>
-        </Tooltip>,
-        <Tooltip key="comment-basic-dislike" title="Dislike">
-      <span>
-          <span className="comment-action">{dislikes}</span>
-      </span>
-        </Tooltip>,
-        <span key="comment-basic-reply-to">Reply to</span>,
-    ];
 
     const CommentList = () =>{
-
         return(
         <List
             dataSource={comments}
@@ -117,7 +67,6 @@ function User(){
     )};
 
     useEffect(()=>{
-
       setName(window.sessionStorage.getItem('username'));
        let timer= setInterval(()=>{
             setTime(new Date());
@@ -131,7 +80,7 @@ function User(){
             const {data:res}=await axios.get("http://localhost:1642/api/User/getcomment",{params:{uid:window.sessionStorage.getItem('uid')}});
           //  console.log(res.data);
          res.data.map(item=>{
-            comments.push({author:item.username,avatar:item.uimage, content: <p>{item.comment}</p>, datetime: item.time,likes:item.likes,actions:actions})
+            comments.push({author:item.username,avatar:item.uimage, content: <p>{item.comment}</p>, datetime: item.time,likes:item.likes})
             });  console.log(comments)
         })();
 

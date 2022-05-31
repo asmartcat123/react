@@ -7,8 +7,13 @@ import Test from "./index/Test";
 import Login from "./index/Login";
 function App() {
 
+useEffect(()=>{
 
+})
+    window.addEventListener("resize", Scale);
+function Scale(){
 
+}
   return (
       <BrowserRouter>
           <div >
